@@ -1,16 +1,1 @@
-
- {
-  "short_name": "هامبا جوس",
-  "name": "هامبا جوس طلبات",
-  "icons": [
-    {
-      "src": "icon.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    }
-  ],
-  "start_url": "index.html",
-  "display": "standalone",
-  "theme_color": "#ff8c00",
-  "background_color": "#ffffff"
-}
+{ "short_name": "هامبا جوس", "name": "هامبا جوس طلبات", "description": "تطبيق طلب العصائر من هامبا جوس", "icons": [ { "src": "https://cdn-icons-png.flaticon.com/512/3130/3130440.png", "sizes": "512x512", "type": "image/png" } ], "start_url": "index.html", "display": "standalone", "theme_color": "#ff8c00", "background_color": "#ffffff" }
