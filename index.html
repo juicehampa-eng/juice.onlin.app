@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>هامبا جوس طلبات</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        :root { --main: #ff8c00; --sec: #2e7d32; --bg: #f4f7f6; }
+        body { font-family: 'Cairo', sans-serif; background: var(--bg); margin: 0; padding-bottom: 100px; }
+        .header { background: var(--main); color: white; padding: 25px; text-align: center; border-radius: 0 0 30px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        
+        /* الأقسام */
+        .tabs { display: flex; overflow-x: auto; padding: 15px; gap: 10px; sticky: top; background: var(--bg); }
+        .tab-btn { background: white; border: 1px solid #ddd; padding: 8px 20px; border-radius: 20px; cursor: pointer; white-space: nowrap; font-weight: bold; }
+        .tab-btn.active { background: var(--sec); color: white; border-color: var(--sec); }
+
+        /* المنتجات */
+        .products-grid { padding: 15px; }
+        .card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px; display: flex; flex-direction: column; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; }
+        .card select { padding: 8px; border-radius: 10px; border: 1px solid #ddd; margin: 10px 0; }
+        .add-btn { background: var(--main); color: white; border: none; padding: 10px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+
+        /* السلة */
+        .cart-overlay { background: white; margin: 15px; border-radius: 20px; padding: 20px; border: 2px solid var(--main); }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 10px 0; }
+        .cart-controls button { background: #eee; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+        .delete-btn { color: red; cursor: pointer; font-size: 14px; margin-top: 5px; display: block; }
+
+        /* بيانات التوصيل */
+        .delivery-form { background: white; margin: 15px; padding: 20px; border-radius: 20px; }
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        .input-group input, .input-group textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px; box-sizing: border-box; }
+
+        /* الأزرار الثابتة */
+        .footer-actions { position: fixed; bottom: 0; width: 100%; background: white; padding: 15px; box-shadow: 0 -5px 15px rgba(0,0,0,0.1); display: flex; gap: 10px; box-sizing: border-box; }
+        .btn { flex: 1; padding: 15px; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; color: white; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .btn-wa { background: #25D366; }
+        .btn-mail { background: #ea4335; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h2 style="margin:0">🥭 هامبا جوس طلبات</h2>
+    <small>فرش، كوكتيلات، وأكثر</small>
+</div>
+
+<div class="tabs">
+    <button class="tab-btn active">فريش</button>
+    <button class="tab-btn">كوكتيلات</button>
+    <button class="tab-btn">اطباق</button>
+    <button class="tab-btn">ايس كريم</button>
+    <button class="tab-btn">موهيتو</button>
+</div>
+
+<div class="products-grid">
+    <div class="card">
+        <div class="card-header">
+            <strong>عصير مانجو طبيعي</strong>
+            <span style="color: var(--sec);">1.5$</span>
+        </div>
+        <select id="size-1">
+            <option value="صغير">صغير</option>
+            <option value="وسط">وسط</option>
+            <option value="كبير">كبير</option>
+            <option value="كانز">كانز</option>
+            <option value="لتر">لتر</option>
+            <option value="لتر ونص">لتر ونص</option>
+        </select>
+        <button class="add-btn" onclick="addToCart('مانجو طبيعي', 'size-1')">إضافة للسلة 🛒</button>
+    </div>
+</div>
+
+<div class="cart-overlay" id="cart-section">
+    <h3>🛒 سلة الطلبات</h3>
+    <div id="cart-items">
+        <p style="text-align:center; color:#999;">السلة فارغة</p>
+    </div>
+</div>
+
+<div class="delivery-form">
+    <h3>📍 بيانات التوصيل</h3>
+    <div class="input-group">
+        <label>الاسم</label>
+        <input type="text" id="cust-name" placeholder="اسمك الكريم">
+    </div>
+    <div class="input-group">
+        <label>رقم التواصل</label>
+        <input type="tel" id="cust-phone" placeholder="77xxxxxxx">
+    </div>
+    <div class="input-group">
+        <label>الموقع / العنوان</label>
+        <textarea id="cust-address" rows="2" placeholder="الشارع، الحي، المعلم القريب"></textarea>
+    </div>
+    <div class="input-group">
+        <label>ملاحظات (اختياري)</label>
+        <textarea id="order-note" placeholder="بدون سكر، بارد جداً..."></textarea>
+    </div>
+</div>
+
+<div class="footer-actions">
+    <button class="btn btn-wa" onclick="sendOrder('wa')">واتساب</button>
+    <button class="btn btn-mail" onclick="sendOrder('mail')">إيميل</button>
+</div>
+
+<script>
+    let cart = [];
+
+    function addToCart(name, sizeId) {
+        const size = document.getElementById(sizeId).value;
+        const item = { name, size, qty: 1, id: Date.now() };
+        cart.push(item);
+        renderCart();
+    }
+
+    function updateQty(id, delta) {
+        const item = cart.find(i => i.id === id);
+        if (item) {
+            item.qty += delta;
+            if (item.qty <= 0) deleteItem(id);
+            else renderCart();
+        }
+    }
+
+    function deleteItem(id) {
+        cart = cart.filter(i => i.id !== id);
+        renderCart();
+    }
+
+    function renderCart() {
+        const container = document.getElementById('cart-items');
+        if (cart.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color:#999;">السلة فارغة</p>';
+            return;
+        }
+        container.innerHTML = cart.map(item => `
+            <div class="cart-item">
+                <div>
+                    <strong>${item.name}</strong><br>
+                    <small>الحجم: ${item.size}</small>
+                    <span class="delete-btn" onclick="deleteItem(${item.id})">🗑️ حذف</span>
+                </div>
+                <div class="cart-controls">
+                    <button onclick="updateQty(${item.id}, -1)">-</button>
+                    <span style="margin:0 10px">${item.qty}</span>
+                    <button onclick="updateQty(${item.id}, 1)">+</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function formatMessage() {
+        if (cart.length === 0) return alert('السلة فارغة!');
+        
+        let msg = `*طلب جديد من هامبا جوس*%0A`;
+        msg += `--------------------------%0A`;
+        cart.forEach(item => {
+            msg += `• ${item.name} (${item.size}) × ${item.qty}%0A`;
+        });
+        msg += `--------------------------%0A`;
+        msg += `👤 العميل: ${document.getElementById('cust-name').value}%0A`;
+        msg += `📞 الهاتف: ${document.getElementById('cust-phone').value}%0A`;
+        msg += `📍 العنوان: ${document.getElementById('cust-address').value}%0A`;
+        msg += `📝 ملاحظات: ${document.getElementById('order-note').value}`;
+        return msg;
+    }
+
+    function sendOrder(type) {
+        const msg = formatMessage();
+        if (!msg) return;
+
+        if (type === 'wa') {
+            // جرب الرقم الأول، يمكن تغيير المنطق ليشمل الرقمين
+            window.open(`https://wa.me/96777501205?text=${msg}`, '_blank');
+        } else {
+            const emailMsg = msg.replace(/%0A/g, '\n');
+            window.location.href = `mailto:juicehampa@gmail.com?subject=طلب جديد&body=${emailMsg}`;
+        }
+    }
+</script>
+
+</body>
+</html>
